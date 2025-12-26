@@ -1,4 +1,4 @@
-# Advanded Encryption Standard
+# Advanded Encryption Standard Library
 A `Net 10.0` C# AES Library
 
 ## Usage
