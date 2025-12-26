@@ -15,54 +15,36 @@ namespace BenScr.Cryptography
         {
             return RandomNumberGenerator.GetBytes((int)keySize / 8);
         }
-        public static byte[] GenerateBytes(int length)
-        {
-            return RandomNumberGenerator.GetBytes(length);
-        }
 
         public static byte[] EncryptBytes(byte[] bytes, byte[] key, byte[] iv)
         {
-            using (Aes aes = Aes.Create())
+            using var aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = iv;
+
+            using var encryptor = aes.CreateEncryptor();
+            using var ms = new MemoryStream();
+            using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
             {
-                aes.Key = key;
-                aes.IV = iv;
-
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        cryptoStream.Write(bytes, 0, bytes.Length);
-                        cryptoStream.FlushFinalBlock();
-                    }
-
-                    return ms.ToArray();
-                }
+                cs.Write(bytes, 0, bytes.Length);
+                cs.FlushFinalBlock();
             }
+            return ms.ToArray();
         }
 
         public static byte[] DecryptBytes(byte[] bytes, byte[] key, byte[] iv)
         {
-            using (Aes aes = Aes.Create())
-            {
-                aes.Key = key;
-                aes.IV = iv;
+            using var aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = iv;
 
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using var decryptor = aes.CreateDecryptor();
+            using var input = new MemoryStream(bytes);
+            using var cs = new CryptoStream(input, decryptor, CryptoStreamMode.Read);
+            using var output = new MemoryStream();
 
-                using (MemoryStream ms = new MemoryStream(bytes))
-                {
-                    MemoryStream output = new MemoryStream();
-
-                    using (CryptoStream cryptoStream = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                    {
-                        cryptoStream.CopyTo(output);
-                    }
-
-                    return output.ToArray();
-                }
-            }
+            cs.CopyTo(output);
+            return output.ToArray();
         }
     }
 }

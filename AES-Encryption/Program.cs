@@ -6,12 +6,10 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-       // Console.WriteLine("Enter a text for encryption:");
-       // string text = Console.ReadLine();
-
-        string encryptedString = Encryptor.EncryptString("Hello", "123");
-        Console.WriteLine(encryptedString);
-        Console.WriteLine(Encryptor.DecryptString(encryptedString, "123"));
+        string text = File.ReadAllText("");
+        string encryptedText = Encryptor.EncryptString(text, "123", KeySize.Bits256);
+        Console.WriteLine(encryptedText);
+        Console.WriteLine(Encryptor.DecryptString(encryptedText, "123", KeySize.Bits256));
     }
 
     public static string ArrayToString<T>(T[] arr)
