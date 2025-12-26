@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using System.Text.Unicode;
+using BenScr.Cryptography;
 
 public static class Program
 {
@@ -10,77 +10,36 @@ public static class Program
         string text = Console.ReadLine();
 
         // Info: Key used for encrypting the text
-        byte[] key = new byte[16];
+        byte[] key = AES.GenerateKey(KeySize.Bits256);
 
         // Info: IV -> Initialization Vector
-        byte[] iv = new byte[16];
-
-        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(key);
-            rng.GetBytes(iv);
-        }
+        byte[] iv = AES.GenerateIV();
 
         byte[] data = Encoding.UTF8.GetBytes(text);
 
-        byte[] cipheredData = Encrypt(data, key, iv);
+        byte[] cipheredData = AES.EncryptBytes(data, key, iv);
 
         string cipherText = Encoding.UTF8.GetString(cipheredData);
         Console.WriteLine("Cipher Text: " + cipherText);
-        byte[] decryptedData = Decrypt(cipheredData, key, iv);
+        byte[] decryptedData = AES.DecryptBytes(cipheredData, key, iv);
         Console.WriteLine("Decrypted Text: " + Encoding.UTF8.GetString(decryptedData));
     }
 
-    public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
+    public static string ArrayToString<T>(T[] arr)
     {
-        byte[] cipheredData;
-
-        using (Aes aes = Aes.Create())
+        string text = "[";
+        for (int i = 0; i < arr.Length; i++)
         {
-            aes.Key = key;
-            aes.IV = iv;
-
-            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-            using (MemoryStream ms = new MemoryStream())
+            if (i == 0)
             {
-                using (CryptoStream cryptoStream = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                {
-                    cryptoStream.Write(data, 0, data.Length);
-                    cryptoStream.FlushFinalBlock();
-                }
-
-                cipheredData = ms.ToArray();
+                text += arr[i];
+            }
+            else
+            {
+                text += ", " + arr[i];
             }
         }
 
-        return cipheredData;
-    }
-
-    public static byte[] Decrypt(byte[] cipheredData, byte[] key, byte[] iv)
-    {
-        byte[] decryptedData;
-
-        using (Aes aes = Aes.Create())
-        {
-            aes.Key = key;
-            aes.IV = iv;
-
-            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-            using (MemoryStream ms = new MemoryStream(cipheredData))
-            {
-               MemoryStream output = new MemoryStream();
-
-                using (CryptoStream cryptoStream = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                {
-                    cryptoStream.CopyTo(output);
-                }
-
-                decryptedData = output.ToArray();
-            }
-        }
-
-        return decryptedData;
+        return text + "]";
     }
 }
