@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="AES-Encryption/AES-Encryption.csproj" />
+  <Project Path="AES-Encryption/Playground.csproj" />
+  <Project Path="AesEncryptor/AesEncryptor.csproj" Id="6522ae62-4543-4efe-97f3-4401d7ca0f47" />
 </Solution>
