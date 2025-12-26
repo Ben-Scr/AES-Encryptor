@@ -6,7 +6,7 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        string text = File.ReadAllText("");
+        string text = Console.ReadLine();
         string encryptedText = Encryptor.EncryptString(text, "123", KeySize.Bits256);
         Console.WriteLine(encryptedText);
         Console.WriteLine(Encryptor.DecryptString(encryptedText, "123", KeySize.Bits256));
