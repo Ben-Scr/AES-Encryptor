@@ -15,9 +15,9 @@ namespace BenScr.Cryptography
         {
             return RandomNumberGenerator.GetBytes((int)keySize / 8);
         }
-        public static byte[] GenerateIV()
+        public static byte[] GenerateBytes(int length)
         {
-            return RandomNumberGenerator.GetBytes(16);
+            return RandomNumberGenerator.GetBytes(length);
         }
 
         public static byte[] EncryptBytes(byte[] bytes, byte[] key, byte[] iv)

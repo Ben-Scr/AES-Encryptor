@@ -6,23 +6,12 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Enter a text for encryption:");
-        string text = Console.ReadLine();
+       // Console.WriteLine("Enter a text for encryption:");
+       // string text = Console.ReadLine();
 
-        // Info: Key used for encrypting the text
-        byte[] key = AES.GenerateKey(KeySize.Bits256);
-
-        // Info: IV -> Initialization Vector
-        byte[] iv = AES.GenerateIV();
-
-        byte[] data = Encoding.UTF8.GetBytes(text);
-
-        byte[] cipheredData = AES.EncryptBytes(data, key, iv);
-
-        string cipherText = Encoding.UTF8.GetString(cipheredData);
-        Console.WriteLine("Cipher Text: " + cipherText);
-        byte[] decryptedData = AES.DecryptBytes(cipheredData, key, iv);
-        Console.WriteLine("Decrypted Text: " + Encoding.UTF8.GetString(decryptedData));
+        string encryptedString = Encryptor.EncryptString("Hello", "123");
+        Console.WriteLine(encryptedString);
+        Console.WriteLine(Encryptor.DecryptString(encryptedString, "123"));
     }
 
     public static string ArrayToString<T>(T[] arr)
