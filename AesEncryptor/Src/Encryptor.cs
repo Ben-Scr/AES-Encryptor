@@ -18,35 +18,40 @@ namespace BenScr.Cryptography
 
             byte[] ciphertext = AES.EncryptBytes(Encoding.UTF8.GetBytes(input), key, iv);
 
-            // pack: salt(16) || iv(16) || ciphertext
-            byte[] packed = new byte[32 + ciphertext.Length];
+            // Info: Pack Salt, IV and the Key size into the data: salt(16) || iv(16) || keySize(1) || ciphertext
+            byte[] packed = new byte[33 + ciphertext.Length];
             Buffer.BlockCopy(salt, 0, packed, 0, 16);
             Buffer.BlockCopy(iv, 0, packed, 16, 16);
-            Buffer.BlockCopy(ciphertext, 0, packed, 32, ciphertext.Length);
+            packed[32] = (byte)((int)keySize / 8);
+
+            Buffer.BlockCopy(ciphertext, 0, packed, 33, ciphertext.Length);
 
             return Convert.ToBase64String(packed);
         }
 
-        public static string DecryptString(string encryptedBase64, string password, KeySize keySize = KeySize.Bits256)
+        public static string DecryptString(string encryptedBase64, string password)
         {
             if (encryptedBase64 is null) throw new ArgumentNullException(nameof(encryptedBase64));
             if (password is null) throw new ArgumentNullException(nameof(password));
 
             byte[] packed = Convert.FromBase64String(encryptedBase64);
 
-            if (packed.Length < 32 + 1)
+            if (packed.Length < 33 + 1)
                 throw new CryptographicException("Ciphertext is too short or invalid.");
 
+            // Info: Unpack Salt and IV from the data: salt(16) || iv(16)
             byte[] salt = new byte[16];
             byte[] iv = new byte[16];
+
             Buffer.BlockCopy(packed, 0, salt, 0, 16);
             Buffer.BlockCopy(packed, 16, iv, 0, 16);
 
-            byte[] ciphertext = new byte[packed.Length - 32];
-            Buffer.BlockCopy(packed, 32, ciphertext, 0, ciphertext.Length);
+            byte keySizeBytes = packed[32];
+            byte[] ciphertext = new byte[packed.Length - 33];
+            Buffer.BlockCopy(packed, 33, ciphertext, 0, ciphertext.Length);
 
-            int keySizeBytes = (int)keySize / 8;
             byte[] key = DeriveKeyFromPassword(password, salt, keySizeBytes);
+
             try
             {
                 byte[] plain = AES.DecryptBytes(ciphertext, key, iv);
@@ -54,7 +59,7 @@ namespace BenScr.Cryptography
             }
             catch
             {
-                throw new CryptographicException("Password is invalid");
+                throw new CryptographicException("Either the password is invalid or something else went wrong");
             }
         }
 

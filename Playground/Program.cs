@@ -19,7 +19,7 @@ public static class Program
 
             Console.WriteLine("\nDecrypted:");
             password = Console.ReadLine();
-            string decryptedText = Encryptor.DecryptString(encryptedText, password, KeySize.Bits256);
+            string decryptedText = Encryptor.DecryptString(encryptedText, password);
             Console.WriteLine(decryptedText);
             Console.ReadLine();
         }
