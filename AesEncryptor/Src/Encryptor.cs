@@ -66,9 +66,7 @@ namespace BenScr.Cryptography
         private static byte[] DeriveKeyFromPassword(string password, byte[] salt, int keySizeBytes)
         {
             const int iterations = 100_000;
-            var kdf = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, iterations, HashAlgorithmName.SHA256, keySizeBytes);
-
-            return kdf;
+            return Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, iterations, HashAlgorithmName.SHA256, keySizeBytes);
         }
     }
 }
