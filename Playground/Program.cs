@@ -29,6 +29,7 @@ public static class Program
         Console.WriteLine(decryptedText);
         Console.ReadLine();
     }
+
     static byte[] key = AES.GenerateKey(KeySize.Bits256);
 
     public static void AESTest()
