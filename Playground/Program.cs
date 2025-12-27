@@ -1,15 +1,28 @@
-﻿using System.Security.Cryptography;
+﻿using BenScr.Cryptography;
 using System.Text;
-using BenScr.Cryptography;
 
 public static class Program
 {
     public static void Main(string[] args)
     {
-        string text = Console.ReadLine();
-        string encryptedText = Encryptor.EncryptString(text, "123", KeySize.Bits256);
-        Console.WriteLine(encryptedText);
-        Console.WriteLine(Encryptor.DecryptString(encryptedText, "123", KeySize.Bits256));
+        while (true)
+        {
+            Console.Clear();
+            string text = Console.ReadLine();
+            string password = Console.ReadLine();
+
+            string input = Console.ReadLine();
+            string encryptedText = input == "" ? Encryptor.EncryptString(text, password, KeySize.Bits256) : input;
+
+            Console.WriteLine("\nEncrypted:");
+            Console.WriteLine(encryptedText);
+
+            Console.WriteLine("\nDecrypted:");
+            password = Console.ReadLine();
+            string decryptedText = Encryptor.DecryptString(encryptedText, password, KeySize.Bits256);
+            Console.WriteLine(decryptedText);
+            Console.ReadLine();
+        }
     }
 
     public static string ArrayToString<T>(T[] arr)

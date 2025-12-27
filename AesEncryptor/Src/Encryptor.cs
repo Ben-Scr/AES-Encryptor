@@ -1,7 +1,4 @@
-﻿using BenScr.Cryptography;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace BenScr.Cryptography
@@ -50,9 +47,15 @@ namespace BenScr.Cryptography
 
             int keySizeBytes = (int)keySize / 8;
             byte[] key = DeriveKeyFromPassword(password, salt, keySizeBytes);
-
-            byte[] plain = AES.DecryptBytes(ciphertext, key, iv);
-            return Encoding.UTF8.GetString(plain);
+            try
+            {
+                byte[] plain = AES.DecryptBytes(ciphertext, key, iv);
+                return Encoding.UTF8.GetString(plain);
+            }
+            catch
+            {
+                throw new CryptographicException("Password is invalid");
+            }
         }
 
         private static byte[] DeriveKeyFromPassword(string password, byte[] salt, int keySizeBytes)
