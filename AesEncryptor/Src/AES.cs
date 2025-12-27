@@ -12,9 +12,7 @@ namespace BenScr.Cryptography
     public static class AES
     {
         public static byte[] GenerateKey(KeySize keySize)
-        {
-            return RandomNumberGenerator.GetBytes((int)keySize / 8);
-        }
+            => RandomNumberGenerator.GetBytes((int)keySize / 8);
 
         public static byte[] EncryptBytes(byte[] bytes, byte[] key, byte[] iv)
         {

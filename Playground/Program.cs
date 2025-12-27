@@ -29,13 +29,16 @@ public static class Program
         Console.WriteLine(decryptedText);
         Console.ReadLine();
     }
+    static byte[] key = AES.GenerateKey(KeySize.Bits256);
+
     public static void AESTest()
     {
         string text = Console.ReadLine();
-        var key = AES.GenerateKey(KeySize.Bits256);
+       
         byte[] encryptedBytes = AES.EncryptBytes(Encoding.UTF8.GetBytes(text), key);
 
         Console.WriteLine("\nEncrypted:");
+        Console.WriteLine(Encoding.UTF8.GetString(encryptedBytes));
         Console.WriteLine(ArrayToString(encryptedBytes));
 
         Console.WriteLine("\nDecrypted:");
