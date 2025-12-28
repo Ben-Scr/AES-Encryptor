@@ -9,7 +9,7 @@ namespace BenScr.Cryptography
         Bits256 = 256
     }
 
-    public static class AES
+    public static class AesHelper
     {
         public static byte[] GenerateKey(KeySize keySize)
             => RandomNumberGenerator.GetBytes((int)keySize / 8);

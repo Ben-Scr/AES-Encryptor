@@ -16,7 +16,7 @@ namespace BenScr.Cryptography
             int keySizeBytes = (int)keySize / 8;
             byte[] key = DeriveKeyFromPassword(password, salt, keySizeBytes);
 
-            byte[] ciphertext = AES.EncryptBytes(Encoding.UTF8.GetBytes(input), key, iv);
+            byte[] ciphertext = AesHelper.EncryptBytes(Encoding.UTF8.GetBytes(input), key, iv);
 
             // Info: Pack Salt, IV and the Key size into the data: salt(16) || iv(16) || keySize(1) || ciphertext
             byte[] packed = new byte[33 + ciphertext.Length];
@@ -54,7 +54,7 @@ namespace BenScr.Cryptography
 
             try
             {
-                byte[] plain = AES.DecryptBytes(ciphertext, key, iv);
+                byte[] plain = AesHelper.DecryptBytes(ciphertext, key, iv);
                 return Encoding.UTF8.GetString(plain);
             }
             catch
